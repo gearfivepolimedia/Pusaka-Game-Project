@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -8,19 +7,20 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     [Header("UI Elements")]
-    public TextMeshProUGUI[] scoreText; // Multiple UI untuk score
-    public TextMeshProUGUI scorePopupText; // Text popup untuk score
-    public TextMeshProUGUI timerText; // UI untuk Timer
+    public TextMeshProUGUI[] scoreText;
+    public TextMeshProUGUI scorePopupText;
+    public TextMeshProUGUI timerText;
 
     [Header("Panels")]
-    public GameObject gameOverPanel; // Panel Game Over
+    public GameObject gameOverPanel;
 
     [Header("Timer Settings")]
-    public float gameTime = 60f; // Waktu bisa diatur di Inspector
+    public float gameTime = 60f;
     private bool isGameActive = true;
-
     private int score = 0;
     private Card firstCard, secondCard;
+    private int totalCards;
+    private int matchedCards = 0;
 
     private void Awake()
     {
@@ -30,8 +30,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        scorePopupText.gameObject.SetActive(false); // Sembunyikan popup saat awal
-        gameOverPanel.SetActive(false); // Sembunyikan Game Over panel
+        scorePopupText.gameObject.SetActive(false);
+        gameOverPanel.SetActive(false);
+        totalCards = FindObjectsOfType<Card>().Length;
         StartCoroutine(StartTimer());
     }
 
@@ -40,7 +41,13 @@ public class GameManager : MonoBehaviour
         if (isGameActive && gameTime > 0)
         {
             gameTime -= Time.deltaTime;
+            gameTime = Mathf.Max(gameTime, 0); // Pastikan waktu tidak negatif
             UpdateTimerUI();
+
+            if (gameTime <= 0)
+            {
+                EndGame();
+            }
         }
     }
 
@@ -49,14 +56,6 @@ public class GameManager : MonoBehaviour
         while (gameTime > 0)
         {
             yield return null;
-        }
-
-        isGameActive = false;
-
-        // Jika waktu habis dan skor masih 0, tampilkan Game Over Panel
-        if (score == 0)
-        {
-            gameOverPanel.SetActive(true);
         }
     }
 
@@ -69,7 +68,7 @@ public class GameManager : MonoBehaviour
 
     public void CardSelected(Card card)
     {
-        if (!isGameActive) return; // Tidak bisa memilih kartu jika permainan berakhir
+        if (!isGameActive) return;
 
         if (firstCard == null)
         {
@@ -89,9 +88,16 @@ public class GameManager : MonoBehaviour
         if (firstCard.GetSprite() == secondCard.GetSprite())
         {
             score += 100;
+            matchedCards += 2;
             ShowScorePopup();
             Destroy(firstCard.gameObject);
             Destroy(secondCard.gameObject);
+
+            if (matchedCards >= totalCards)
+            {
+                WinManager.Instance.ShowWinPanel(score);
+                isGameActive = false;
+            }
         }
         else
         {
@@ -108,9 +114,8 @@ public class GameManager : MonoBehaviour
 
     private void ShowScorePopup()
     {
-        scorePopupText.text = "+100"; // Set teks popup
-        scorePopupText.gameObject.SetActive(true); // Un-hide popup
-
+        scorePopupText.text = "+100";
+        scorePopupText.gameObject.SetActive(true);
         StartCoroutine(HideScorePopup());
     }
 
@@ -125,6 +130,19 @@ public class GameManager : MonoBehaviour
         foreach (TextMeshProUGUI text in scoreText)
         {
             text.text = score.ToString();
+        }
+    }
+
+    private void EndGame()
+    {
+        isGameActive = false;
+        if (score > 0)
+        {
+            WinManager.Instance.ShowWinPanel(score);
+        }
+        else
+        {
+            gameOverPanel.SetActive(true);
         }
     }
 }

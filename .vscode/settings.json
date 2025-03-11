@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Pusaka Project.sln"
+    "dotnet.defaultSolution": "Pusaka-Game-Project.sln"
 }

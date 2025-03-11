@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class WinManager : MonoBehaviour
@@ -9,14 +6,14 @@ public class WinManager : MonoBehaviour
     public static WinManager Instance;
 
     [Header("Win Panel UI")]
-    public GameObject winPanel; // Panel kemenangan
-    public TextMeshProUGUI finalScoreText; // Hanya angka, tanpa "Final Score"
+    public GameObject winPanel;
+    public TextMeshProUGUI finalScoreText;
 
     [Header("Star Rating UI")]
     public GameObject star1;
     public GameObject star2;
     public GameObject star3;
-    public TextMeshProUGUI hiddenText; // Teks tersembunyi hanya untuk bintang 3
+    public TextMeshProUGUI hiddenText;
 
     [Header("Star Score Thresholds")]
     public int scoreForOneStar = 100;
@@ -31,7 +28,7 @@ public class WinManager : MonoBehaviour
 
     private void Start()
     {
-        winPanel.SetActive(false); 
+        winPanel.SetActive(false);
         star1.SetActive(false);
         star2.SetActive(false);
         star3.SetActive(false);
@@ -40,10 +37,9 @@ public class WinManager : MonoBehaviour
 
     public void ShowWinPanel(int score)
     {
-        winPanel.SetActive(true); 
-        finalScoreText.text = score.ToString(); // Menampilkan hanya angka skor
+        winPanel.SetActive(true);
+        finalScoreText.text = score.ToString();
 
-        // Menentukan jumlah bintang berdasarkan skor
         if (score >= scoreForThreeStars)
         {
             star1.SetActive(true);
