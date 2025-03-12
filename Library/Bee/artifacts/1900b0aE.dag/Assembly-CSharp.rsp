@@ -387,6 +387,7 @@
 "Assets/Script/CardFlip/Card.cs"
 "Assets/Script/CardFlip/GameManager.cs"
 "Assets/Script/CardFlip/HealthManager.cs"
+"Assets/Script/CardFlip/LevelLockManager.cs"
 "Assets/Script/CardFlip/ScorePopup.cs"
 "Assets/Script/CardFlip/StarRating.cs"
 "Assets/Script/CardFlip/WinManager.cs"

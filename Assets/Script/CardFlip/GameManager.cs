@@ -83,33 +83,29 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator CheckMatch()
     {
-        yield return new WaitForSeconds(1f);
+    yield return new WaitForSeconds(1f);
 
-        if (firstCard.GetSprite() == secondCard.GetSprite())
-        {
-            score += 100;
-            matchedCards += 2;
-            ShowScorePopup();
-            Destroy(firstCard.gameObject);
-            Destroy(secondCard.gameObject);
+    if (firstCard.GetSprite() == secondCard.GetSprite())
+    {
+        score += 100;
+        ShowScorePopup();
+        Destroy(firstCard.gameObject);
+        Destroy(secondCard.gameObject);
 
-            if (matchedCards >= totalCards)
-            {
-                WinManager.Instance.ShowWinPanel(score);
-                isGameActive = false;
-            }
-        }
-        else
-        {
-            firstCard.FlipBack();
-            secondCard.FlipBack();
-            HealthManager.Instance.LoseHealth();
-        }
+        matchedCards++; // Tambahkan jumlah kartu yang cocok
+        WinManager.Instance.IncreaseMatchedCards(); // Pastikan ini dipanggil untuk cek kemenangan
+    }
+    else
+    {
+        firstCard.FlipBack();
+        secondCard.FlipBack();
+        HealthManager.Instance.LoseHealth();
+    }
 
-        firstCard = null;
-        secondCard = null;
+    firstCard = null;
+    secondCard = null;
 
-        UpdateScoreText();
+    UpdateScoreText();
     }
 
     private void ShowScorePopup()
@@ -123,6 +119,11 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
         scorePopupText.gameObject.SetActive(false);
+    }
+
+    public int GetScore()
+    {
+    return score;
     }
 
     private void UpdateScoreText()

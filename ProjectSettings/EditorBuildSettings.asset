@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Level 1 Pulau Jawa/Materi Pulau Jawa.unity
     guid: fb98a3cf85350094f8bb825327b205ed
   - enabled: 1
-    path: Assets/Scenes/Level 1 Pulau Jawa/Level 1.unity
+    path: Assets/Scenes/Level 1 Pulau Jawa/Level1.unity
     guid: ddfba5959c53f9d43b82d37775e0c41c
+  - enabled: 1
+    path: Assets/Scenes/Level 2/Level2.unity
+    guid: 9f303dca63707d04095e3733055e44e0
   m_configObjects: {}
