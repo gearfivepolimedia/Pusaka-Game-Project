@@ -12,6 +12,7 @@ public class WinManager : MonoBehaviour
     public GameObject winPanel;
     public TextMeshProUGUI finalScoreText;
     public Button nextLevelButton;
+    public QuizManager quizManager;
 
     [Header("Star Rating UI")]
     public GameObject star1;
@@ -25,9 +26,9 @@ public class WinManager : MonoBehaviour
     public int scoreForThreeStars = 500;
 
     [Header("Level Settings")]
-    public int currentLevel; // Level saat ini
-    public int totalCards; // Jumlah total kartu dalam level
-    private int matchedCards = 0; // Kartu yang sudah dipasangkan
+    public int currentLevel;
+    public int totalCards;
+    private int matchedCards = 0;
 
     private void Awake()
     {
@@ -42,40 +43,49 @@ public class WinManager : MonoBehaviour
         star2.SetActive(false);
         star3.SetActive(false);
         hiddenText.gameObject.SetActive(false);
-        
+
         if (nextLevelButton != null)
-            nextLevelButton.interactable = false; // Tombol tidak aktif sampai level selesai
+            nextLevelButton.interactable = false;
+    }
+
+    public void StartQuiz()
+    {
+        quizManager.StartQuiz();
     }
 
     public void IncreaseMatchedCards()
     {
         matchedCards++;
-        if (matchedCards >= totalCards / 2) // Karena kartu berpasangan
+        if (matchedCards >= totalCards / 2)
         {
-            ShowWinPanel(GameManager.Instance.GetScore());
+            StartQuiz();
         }
     }
 
-    public void ShowWinPanel(int score)
+    public void ShowWinPanel()
     {
+        int quizScore = (quizManager != null) ? quizManager.GetQuizScore() : 0;
+        int totalScore = GameManager.Instance.GetScore() + quizScore;
+        
         winPanel.SetActive(true);
-        finalScoreText.text = score.ToString();
+        finalScoreText.text = totalScore.ToString();
 
-        if (score >= scoreForThreeStars)
+        // Hitung bintang berdasarkan total skor
+        if (totalScore >= scoreForThreeStars)
         {
             star1.SetActive(true);
             star2.SetActive(true);
             star3.SetActive(true);
             hiddenText.gameObject.SetActive(true);
         }
-        else if (score >= scoreForTwoStars)
+        else if (totalScore >= scoreForTwoStars)
         {
             star1.SetActive(true);
             star2.SetActive(true);
             star3.SetActive(false);
             hiddenText.gameObject.SetActive(false);
         }
-        else if (score >= scoreForOneStar)
+        else if (totalScore >= scoreForOneStar)
         {
             star1.SetActive(true);
             star2.SetActive(false);
@@ -89,7 +99,7 @@ public class WinManager : MonoBehaviour
     private void UnlockNextLevel()
     {
         int nextLevel = currentLevel + 1;
-        PlayerPrefs.SetInt("Level" + nextLevel, 1); // Menyimpan level yang terbuka
+        PlayerPrefs.SetInt("Level" + nextLevel, 1);
         PlayerPrefs.Save();
 
         if (nextLevelButton != null)

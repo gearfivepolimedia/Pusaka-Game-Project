@@ -23,6 +23,11 @@ public class HealthManager : MonoBehaviour
         gameOverPanel.SetActive(false); // Sembunyikan panel game over saat awal
     }
 
+    public int GetHealth()
+    {
+    return health; // Pastikan ada variabel health di HealthManager
+    }
+
     public void LoseHealth()
     {
         if (health > 0)

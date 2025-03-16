@@ -88,12 +88,11 @@ public class GameManager : MonoBehaviour
     if (firstCard.GetSprite() == secondCard.GetSprite())
     {
         score += 100;
-        ShowScorePopup();
+        ShowScorePopup("+100");
         Destroy(firstCard.gameObject);
         Destroy(secondCard.gameObject);
-
-        matchedCards++; // Tambahkan jumlah kartu yang cocok
-        WinManager.Instance.IncreaseMatchedCards(); // Pastikan ini dipanggil untuk cek kemenangan
+        matchedCards++;
+        CheckAllCardsMatched();
     }
     else
     {
@@ -108,16 +107,33 @@ public class GameManager : MonoBehaviour
     UpdateScoreText();
     }
 
-    private void ShowScorePopup()
+    private void CheckAllCardsMatched()
     {
-        scorePopupText.text = "+100";
-        scorePopupText.gameObject.SetActive(true);
-        StartCoroutine(HideScorePopup());
+    if (matchedCards >= totalCards / 2) // ✅ Perbaikan dari allCardsMatched
+    {
+        QuizManager.Instance.StartQuiz(); // ✅ Perbaikan pemanggilan
     }
+    }
+
+    public void ShowScorePopup(string text)
+    {
+    scorePopupText.text = text; // ✅ Gunakan teks dari parameter
+    scorePopupText.gameObject.SetActive(true);
+     Debug.Log("Pop-up score muncul dengan teks: " + text);
+    StartCoroutine(HideScorePopup());
+    }
+
+    public void AddScore(int amount)
+    {
+    score += amount;
+    Debug.Log("Skor sekarang: " + score);
+    UpdateScoreText();
+    }
+
 
     private IEnumerator HideScorePopup()
     {
-        yield return new WaitForSeconds(1.5f);
+         yield return new WaitForSeconds(1.5f);
         scorePopupText.gameObject.SetActive(false);
     }
 
@@ -126,12 +142,25 @@ public class GameManager : MonoBehaviour
     return score;
     }
 
-    private void UpdateScoreText()
+    public void UpdateScoreText()
     {
-        foreach (TextMeshProUGUI text in scoreText)
+    foreach (TextMeshProUGUI text in scoreText)
+    {
+        if (text != null)
         {
             text.text = score.ToString();
+            Debug.Log("UI Score Text di-update: " + score); // 🔍 Debugging
         }
+        else
+        {
+            Debug.LogWarning("Ada UI Score Text yang belum diassign di Inspector!"); // 🚨 Debugging untuk cek di Unity
+        }
+    }
+    }
+
+    public float GetRemainingTime()
+    {
+    return gameTime; // Pastikan ada variabel timer di GameManager
     }
 
     private void EndGame()
@@ -139,7 +168,7 @@ public class GameManager : MonoBehaviour
         isGameActive = false;
         if (score > 0)
         {
-            WinManager.Instance.ShowWinPanel(score);
+            WinManager.Instance.ShowWinPanel();
         }
         else
         {
