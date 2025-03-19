@@ -394,6 +394,7 @@
 "Assets/Script/CardFlip/WinManager.cs"
 "Assets/Script/GameOver.cs"
 "Assets/Script/MainMenu.cs"
+"Assets/Script/PauseManager.cs"
 "Assets/Script/Running Text.cs"
 "Assets/Script/SelectLevelButton.cs"
 "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01.cs"
